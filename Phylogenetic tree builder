@@ -1,0 +1,25 @@
+# Load the ape package for phylogenetic analysis
+library(ape)
+
+# Define the path to the directory containing the FASTA files
+fasta_dir <- "/path/to/fasta/files/"
+
+# Initialize an empty DNA sequence object
+dna_seqs <- NULL
+
+# Loop through each FASTA file in the directory and concatenate the sequences
+fasta_files <- list.files(fasta_dir, pattern = ".fasta")
+for (file in fasta_files) {
+  file_path <- paste(fasta_dir, file, sep = "")
+  seqs <- read.dna(file_path, format = "fasta")
+  dna_seqs <- c(dna_seqs, seqs)
+}
+
+# Calculate the distance matrix using Kimura's 2-parameter model
+dist_matrix <- dist.dna(dna_seqs, model = "K80")
+
+# Build the neighbor-joining tree from the distance matrix
+tree <- nj(dist_matrix)
+
+# Plot the tree using the plot.phylo() function
+plot.phylo(tree, cex = 0.8, tip.color = "blue")
