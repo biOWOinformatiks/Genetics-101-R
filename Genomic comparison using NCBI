@@ -1,0 +1,24 @@
+# Load the required libraries
+library(seqinr)
+library(ggbio)
+
+# Define the NCBI API URL and the two species to compare
+ncbi_url <- "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+species1 <- "Escherichia coli"
+species2 <- "Salmonella enterica"
+
+# Download the genome data for the two species
+efetch_url <- paste(ncbi_url, "efetch.fcgi?db=nuccore&id=",
+                     query.ncbi(accessions(species1)), "&rettype=fasta&retmode=text", sep="")
+species1_genome <- read.fasta(efetch_url)
+
+efetch_url <- paste(ncbi_url, "efetch.fcgi?db=nuccore&id=",
+                     query.ncbi(accessions(species2)), "&rettype=fasta&retmode=text", sep="")
+species2_genome <- read.fasta(efetch_url)
+
+# Perform genome comparison using ggbio
+genome1 <- autoplot(genome(species1_genome))
+genome2 <- autoplot(genome(species2_genome))
+p <- ggplot() +
+  layout_karyogram(genome1, genome2, chromosome_col = "gray", label_pos = "above", geom_segment = segment_hilite)
+print(p)
